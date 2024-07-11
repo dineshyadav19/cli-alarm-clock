@@ -118,11 +118,12 @@ export class AlarmService {
       const alarm = this.alarms.get(this.ringingAlarmKey);
       if (alarm) {
         const snoozeCount = this.snoozedAlarms.get(this.ringingAlarmKey) || 0;
-        if (snoozeCount <= 3) {
+        if (snoozeCount < 3) {
           console.log(messages.alarmSnoozed);
           this.snoozedAlarms.set(this.ringingAlarmKey, snoozeCount + 1);
           setTimeout(() => {
             this.snoozedAlarms.delete(this.ringingAlarmKey!);
+            this.checkAlarms();
           }, 30 * 1000); // 30 seconds for demonstration
         } else {
           console.log(messages.cannotSnooze);
