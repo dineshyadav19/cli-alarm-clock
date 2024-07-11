@@ -76,7 +76,6 @@ export class AlarmService {
       }
       const [alarmDay, alarmTime] = key.split("-");
       if (alarmDay === currentDay && alarmTime === currentHourMinute) {
-        console.log(messages.ringingAlarm(alarmDay, alarmTime));
         this.ringingAlarmKey = key;
         this.handleRingingAlarm(alarm, alarmDay, alarmTime);
       }
@@ -93,19 +92,25 @@ export class AlarmService {
   }
 
   private handleRingingAlarm(alarm: Alarm, day: string, time: string) {
-    setTimeout(() => {
-      rl.question(messages.snoozeOrStop, (answer) => {
-        if (answer.toLowerCase() === "snooze") {
-          this.snoozeRingingAlarm();
-        } else if (answer.toLowerCase() === "stop") {
-          this.deleteAlarm(`${day}-${time}`);
-        } else {
-          console.log(messages.invalidOption);
-        }
-        this.ringingAlarmKey = null;
-        this.alarmController.showMenu();
-      });
-    }, 500);
+    if (this.ringingAlarmKey) {
+      console.log(messages.ringingAlarm(day, time));
+      this.promptSnoozeOrStop(alarm, day, time);
+    }
+  }
+
+  private promptSnoozeOrStop(alarm: Alarm, day: string, time: string) {
+    rl.question(messages.snoozeOrStop, (answer) => {
+      if (answer.toLowerCase() === "snooze") {
+        this.snoozeRingingAlarm();
+      } else if (answer.toLowerCase() === "stop") {
+        this.deleteAlarm(`${day}-${time}`);
+      } else {
+        console.log(messages.invalidOption);
+        this.promptSnoozeOrStop(alarm, day, time);
+      }
+      this.ringingAlarmKey = null;
+      this.alarmController.showMenu();
+    });
   }
 
   public snoozeRingingAlarm() {
@@ -113,14 +118,15 @@ export class AlarmService {
       const alarm = this.alarms.get(this.ringingAlarmKey);
       if (alarm) {
         const snoozeCount = this.snoozedAlarms.get(this.ringingAlarmKey) || 0;
-        if (snoozeCount < 3) {
+        if (snoozeCount <= 3) {
           console.log(messages.alarmSnoozed);
           this.snoozedAlarms.set(this.ringingAlarmKey, snoozeCount + 1);
           setTimeout(() => {
             this.snoozedAlarms.delete(this.ringingAlarmKey!);
-          }, 30 * 1000);
+          }, 30 * 1000); // 30 seconds for demonstration
         } else {
           console.log(messages.cannotSnooze);
+          this.deleteAlarm(this.ringingAlarmKey);
         }
       }
     }

@@ -17,7 +17,7 @@ export const messages = {
   ringingAlarm: (day: string, time: string) =>
     `ALARM RINGING for ${day} at ${time}`,
   snoozeOrStop: "Do you want to snooze or stop it? (snooze/stop): ",
-  alarmSnoozed: "Alarm snoozed for 5 minutes.",
+  alarmSnoozed: "Alarm snoozed for 30 seconds.",
   cannotSnooze: "Cannot snooze the alarm anymore.",
   enterAlarmToDelete:
     'Enter the number of the alarm you want to delete (or type "cancel" to return to the main menu): ',

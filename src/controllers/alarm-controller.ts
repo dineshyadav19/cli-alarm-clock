@@ -42,7 +42,7 @@ export class AlarmController {
         case "6":
           console.log(messages.exit);
           rl.close();
-          break;
+          process.exit(0);
         default:
           console.log(messages.invalidOption);
           this.showMenu();
