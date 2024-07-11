@@ -15,7 +15,7 @@ export class Alarm {
 
   public snooze(): boolean {
     if (this.snoozeCount < 3) {
-      this.alarmTime.add(5, "minutes");
+      this.alarmTime.add(30, "seconds");
       this.snoozeCount++;
       return true;
     }
